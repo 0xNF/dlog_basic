@@ -2,10 +2,22 @@ import 'dart:convert';
 
 import 'package:dart_ilogger/dart_ilogger.dart';
 
+final _jsonConverter = JsonEncoder((val) => val?.toString());
+
+String _jsonConvert(Map<String, dynamic>? eventProperties) {
+  if (eventProperties == null) {
+    return "";
+  }
+  try {
+    final res = _jsonConverter.convert(eventProperties);
+    return res;
+  } on Exception catch (e) {
+    return "<serialization error>";
+  }
+}
+
 class BasicLogger extends ILogger {
   const BasicLogger({required super.name});
-
-  static const _jsonConverter = JsonEncoder();
 
   @override
   bool get isDebugEnabled => true;
@@ -30,9 +42,15 @@ class BasicLogger extends ILogger {
 
   @override
   void log(LogLevel level, message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    final exceptionStr = exception == null ? "" : " ${exception.toString} ";
-    final eventPropString = eventProperties == null ? "" : _jsonConverter.convert(eventProperties);
-    print("[${DateTime.now()}] | [${level.name}] | $message |$exceptionStr|$eventPropString");
+    final exceptionStr = exception == null ? "" : " ${exception.toString()} ";
+    final eventPropString = _jsonConvert(eventProperties);
+    String m = message.toString();
+    if (eventProperties != null) {
+      for (final kvp in eventProperties.entries) {
+        m = m.replaceAll('{${kvp.key}}', kvp.value);
+      }
+    }
+    print("[${DateTime.now()}] [${level.name}] [${super.name}] $m |$exceptionStr|$eventPropString");
   }
 
   @override
