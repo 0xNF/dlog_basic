@@ -47,7 +47,13 @@ class BasicLogger extends ILogger {
     String m = message.toString();
     if (eventProperties != null) {
       for (final kvp in eventProperties.entries) {
-        m = m.replaceAll('{${kvp.key}}', kvp.value);
+        String vl;
+        if (kvp.value is String) {
+          vl = kvp.value as String;
+        } else {
+          vl = const JsonEncoder().convert(kvp.value);
+        }
+        m = m.replaceAll('{${kvp.key}}', vl);
       }
     }
     print("[${DateTime.now()}] [${level.name}] [${super.name}] $m |$exceptionStr|$eventPropString");
