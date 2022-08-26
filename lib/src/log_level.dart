@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 
+import 'package:json_annotation/json_annotation.dart';
+
 /// Which log level to write with, from [LogLevel.trace] (most noisy) to [LogLevel.fatal] (least noisy)
 class LogLevel {
   final String name;
@@ -38,14 +40,53 @@ class LogLevel {
   /// Messages documenting things that should stop the system completely
   static LogLevel fatal = LogLevel(name: "Fatal", ordinal: 5);
 
+  static LogLevel off = LogLevel(name: "Off", ordinal: 2147483647);
+
   static LogLevel? fromOrdinal(int i) {
     return _values.firstWhereOrNull((l) => l.ordinal == i);
   }
 
   static LogLevel? fromString(String s) {
+    String slower = s.toLowerCase();
+    if (s == "information") {
+      slower = "info";
+    } else if (s == "warning") {
+      slower = "warn";
+    }
     return _values.firstWhere((l) => l.name.toLowerCase() == s.toLowerCase());
   }
 
-  static LogLevel get minLevel => _values.fold(fatal, (previousValue, element) => previousValue.ordinal > element.ordinal ? previousValue : element);
-  static LogLevel get maxLevel => _values.fold(debug, (previousValue, element) => previousValue.ordinal < element.ordinal ? previousValue : element);
+  static LogLevel get minLevel {
+    _minLevel ??= _values.fold(fatal, (previousValue, element) => previousValue!.ordinal < element.ordinal ? previousValue : element);
+    return _minLevel!;
+  }
+
+  static LogLevel? _minLevel;
+
+  static LogLevel get maxLevel {
+    _maxLevel ??= _values.fold(fatal, (previousValue, element) => previousValue!.ordinal > element.ordinal ? previousValue : element);
+    return _maxLevel!;
+  }
+
+  static LogLevel? _maxLevel;
+
+  String toJson() {
+    return this.name;
+  }
+
+  factory LogLevel.fromJson(dynamic json) {
+    if (json == null) {
+      throw Exception("Got null for LogLevel");
+    }
+    if (json is String) {
+      final ll = LogLevel.values.firstWhereOrNull((x) => x.name == json);
+      if (ll == null) {
+        throw Exception("Got invalid LogLevel: $json");
+      } else {
+        return ll;
+      }
+    } else {
+      throw Exception("Got invalid type for LogLevel: $json");
+    }
+  }
 }
