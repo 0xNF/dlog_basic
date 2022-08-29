@@ -1,7 +1,8 @@
 import 'package:dart_ilogger/src/ilogger_base.dart';
+import 'package:dart_ilogger/src/isuppress.dart';
 import 'package:dart_ilogger/src/log_level.dart';
 
-abstract class ILogger extends ILoggerBase {
+abstract class ILogger extends ILoggerBase implements ISuppress {
   bool get isTraceEnabled => isEnabled(LogLevel.trace);
   bool get isDebugEnabled => isEnabled(LogLevel.debug);
   bool get isInfoEnabled => isEnabled(LogLevel.info);
@@ -30,6 +31,7 @@ abstract class ILogger extends ILoggerBase {
   /// Runs action.
   ///
   ///  If the action throws, the exception is logged at Error level. Exception is not propagated outside of this method.
+  @override
   void swallow(Function() action) {
     try {
       action();
@@ -43,7 +45,8 @@ abstract class ILogger extends ILoggerBase {
   /// If exception is thrown, it is logged at Error level.  Exception is not propagated outside of this method.
   ///
   /// Fallback value is returned instead.
-  T? swallowResult<T>(T? Function() action, T? fallbackValue) {
+  @override
+  T? swallowResult<T>(T? Function() action, [T? fallbackValue]) {
     try {
       return action();
     } on Exception catch (e) {
@@ -55,6 +58,7 @@ abstract class ILogger extends ILoggerBase {
   /// Runs async action.
   ///
   /// If the action throws, the exception is logged at Error level. Exception is not propagated outside of this method.
+  @override
   Future<void> swallowAsync(Function() action) async {
     try {
       await action();
@@ -68,6 +72,7 @@ abstract class ILogger extends ILoggerBase {
   /// If exception is thrown, it is logged at Error level.  Exception is not propagated outside of this method.
   ///
   /// Fallback value is returned instead.
+  @override
   Future<T?> swallowResultAsync<T>(Future<T?> Function() action, T? fallbackValue) async {
     try {
       T? res = await action();

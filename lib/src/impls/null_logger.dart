@@ -63,7 +63,7 @@ class NullLogger extends ILogger {
   }
 
   @override
-  T? swallowResult<T>(T? Function() action, T? fallbackValue) {
+  T? swallowResult<T>(T? Function() action, [T? fallbackValue]) {
     try {
       return action();
     } finally {}
