@@ -51,7 +51,11 @@ class BasicLogger extends ILogger {
         if (kvp.value is String) {
           vl = kvp.value as String;
         } else {
-          vl = const JsonEncoder().convert(kvp.value);
+          try {
+            vl = const JsonEncoder().convert(kvp.value);
+          } catch (e) {
+            vl = kvp.value.toString();
+          }
         }
         m = m.replaceAll('{${kvp.key}}', vl);
       }
