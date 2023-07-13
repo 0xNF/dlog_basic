@@ -1,7 +1,5 @@
 import 'package:collection/collection.dart';
 
-import 'package:json_annotation/json_annotation.dart';
-
 /// Which log level to write with, from [LogLevel.trace] (most noisy) to [LogLevel.fatal] (least noisy)
 class LogLevel {
   final String name;
