@@ -1,23 +1,14 @@
-import 'dart:convert';
-
 import 'package:dart_ilogger/dart_ilogger.dart';
-
-final _jsonConverter = JsonEncoder((val) => val?.toString());
-
-String _jsonConvert(Map<String, dynamic>? eventProperties) {
-  if (eventProperties == null) {
-    return "";
-  }
-  try {
-    final res = _jsonConverter.convert(eventProperties);
-    return res;
-  } on Exception catch (e) {
-    return "<serialization error>";
-  }
-}
+import 'package:dart_ilogger/src/log_event.dart';
+import 'package:dart_ilogger/src/targets/basic_console_target.dart';
 
 class BasicLogger extends ILogger {
-  const BasicLogger({required super.name});
+  const BasicLogger({
+    required super.name,
+    super.targets = const [
+      BasicConsoleTarget(),
+    ],
+  });
 
   @override
   bool get isDebugEnabled => true;
@@ -42,25 +33,20 @@ class BasicLogger extends ILogger {
 
   @override
   void log(LogLevel level, message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    final exceptionStr = exception == null ? "" : " ${exception.toString()} ";
-    final eventPropString = _jsonConvert(eventProperties);
-    String m = message.toString();
-    if (eventProperties != null) {
-      for (final kvp in eventProperties.entries) {
-        String vl;
-        if (kvp.value is String) {
-          vl = kvp.value as String;
-        } else {
-          try {
-            vl = const JsonEncoder().convert(kvp.value);
-          } catch (e) {
-            vl = kvp.value.toString();
-          }
-        }
-        m = m.replaceAll('{${kvp.key}}', vl);
+    if (isEnabled(level)) {
+      final LogEvent logEvent = LogEvent(
+        loggerName: super.name,
+        datetime: DateTime.now(),
+        level: level,
+        message: message,
+        eventProperties: eventProperties ?? {},
+        exception: exception,
+      );
+
+      for (final target in super.targets) {
+        target.writeAsync(logEvent);
       }
     }
-    print("[${DateTime.now()}] [${level.name}] [${super.name}] $m |$exceptionStr|$eventPropString");
   }
 
   @override

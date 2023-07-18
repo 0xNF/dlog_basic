@@ -51,7 +51,7 @@ class LogLevel {
     } else if (s == "warning") {
       slower = "warn";
     }
-    return _values.firstWhere((l) => l.name.toLowerCase() == s.toLowerCase());
+    return _values.firstWhere((l) => l.name.toLowerCase() == slower);
   }
 
   static LogLevel get minLevel {
@@ -69,7 +69,7 @@ class LogLevel {
   static LogLevel? _maxLevel;
 
   String toJson() {
-    return this.name;
+    return name;
   }
 
   factory LogLevel.fromJson(dynamic json) {

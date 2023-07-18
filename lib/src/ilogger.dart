@@ -1,6 +1,8 @@
 import 'package:dart_ilogger/src/ilogger_base.dart';
 import 'package:dart_ilogger/src/isuppress.dart';
 import 'package:dart_ilogger/src/log_level.dart';
+import 'package:dart_ilogger/src/targets/basic_console_target.dart';
+import 'package:dart_ilogger/src/targets/i_target.dart';
 
 abstract class ILogger extends ILoggerBase implements ISuppress {
   bool get isTraceEnabled => isEnabled(LogLevel.trace);
@@ -83,5 +85,10 @@ abstract class ILogger extends ILoggerBase implements ISuppress {
     }
   }
 
-  const ILogger({required super.name});
+  const ILogger({
+    required super.name,
+    super.targets = const <ITarget>[
+      BasicConsoleTarget(),
+    ],
+  });
 }
