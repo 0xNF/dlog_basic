@@ -21,8 +21,8 @@ class BasicConsoleSink extends ISink {
 
 class BasicFileSink extends ISink {
   /// Current file being written to
-  String get pathToFile => _pathToFile;
-  String _pathToFile;
+  FileNamePartition get filePartition => _filePartition;
+  FileNamePartition _filePartition;
 
   /// Encoding of the bytes to write
   final Encoding encoding;
@@ -33,26 +33,25 @@ class BasicFileSink extends ISink {
 
   RandomAccessFile? _handle;
 
-  BasicFileSink({required String pathToFile, this.encoding = utf8}) : _pathToFile = pathToFile;
+  BasicFileSink({required String pathToFile, this.encoding = utf8}) : _filePartition = FileNamePartition.fromFuzzyFilePath(pathToFile);
 
   /// Changes the path, for e.g., a file rollover
   /// Closes the existing file if open
   void changePathMutSync(String newPath) {
     closeSync();
-    _pathToFile = newPath;
+    _filePartition = FileNamePartition.fromFuzzyFilePath(newPath);
   }
 
   /// Changes the path, for e.g., a file rollover
   /// Closes the existing file if open
-  Future<void> changePathAsync(String newPath) async {
+  Future<void> changePathMutAsync(String newPath) async {
     await closeAsync();
-    _pathToFile = newPath;
+    _filePartition = FileNamePartition.fromFuzzyFilePath(newPath);
   }
 
   @override
   void openSync() {
-    final partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
-    final fpath = partition.makeFullPath();
+    final fpath = filePartition.makeFullPath();
     final f = File(fpath);
     _handle = f.openSync(mode: FileMode.writeOnlyAppend);
     _writtenBytes = f.lengthSync();

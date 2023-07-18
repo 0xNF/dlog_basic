@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dart_ilogger/dart_ilogger.dart';
 import 'package:path/path.dart' as path;
 
@@ -41,6 +43,12 @@ final class FileNamePartition {
     required this.datePortion,
     required this.incrementPortion,
   });
+
+  /// Returns the [File] that this partition is constructed from.
+  /// There are no guarantees that this file exists, so be sure to call [.exists()] before assuming anything about this object
+  File getIOFile() {
+    return File(makeFullPath());
+  }
 
   /// Creates a FileNamePartition from the given path, decoding date increment portions if present
   factory FileNamePartition.fromFuzzyFilePath(String fpath) {

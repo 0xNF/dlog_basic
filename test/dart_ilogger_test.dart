@@ -95,7 +95,7 @@ void main() {
 
       final partition = FileNamePartition.fromFuzzyFilePath(logpath).rolloverIncrement();
       final bytesF1 = await f.readAsBytes();
-      final bytesF2 = await (File(partition.makeFullPath())).readAsBytes();
+      final bytesF2 = await partition.getIOFile().readAsBytes();
       expect(bytesF1.lengthInBytes, closeTo(size, size * .1));
       expect(bytesF2.lengthInBytes, closeTo(size, size * .1));
     });
@@ -109,20 +109,34 @@ void main() {
       logger.info('line one file one');
 
       /* hack to set the log file back a day */
-      var testPartition = FileNamePartition.fromFuzzyFilePath(logpath).rolloverDate(setAs: DateTime.now().subtract(Duration(days: 1)));
-      await f.rename(testPartition.makeFileName());
+      final today = DateTime.now();
+      final yesterday = today.subtract(Duration(days: 1));
+
+      final partition1 = FileNamePartition.fromFuzzyFilePath(logpath).rolloverDate(setAs: yesterday);
+      final partition2 = partition1.rolloverDate();
+
+      File f1 = bft.sink.filePartition.getIOFile();
+      await bft.sink.changePathMutAsync(partition1.makeFullPath());
+      f1 = await f1.rename(partition1.makeFileName());
+
+      await bft.sink.openAsync();
 
       logger.info('line one file two');
 
       /* check contents */
-      final linesF1 = await f.readAsLines();
-      final linesF2 = await (File(testPartition.makeFullPath())).readAsLines();
-      expect(linesF1, contains('file one'));
-      expect(linesF2, contains('file two'));
+      final f2 = partition2.getIOFile();
+      final linesF1 = await f1.readAsLines();
+      final linesF2 = await f2.readAsLines();
 
-      /* check partitions */
-      final partition1 = FileNamePartition.fromFuzzyFilePath(logpath);
-      final partition2 = FileNamePartition.fromFuzzyFilePath(fpath)
+      expect(linesF1.first, contains('file one'));
+      expect(linesF2.first, contains('file two'));
+      expect(f1.path, contains(FileNamePartition.stringifyDateTime(yesterday)));
+      expect(f2.path, contains(FileNamePartition.stringifyDateTime(today)));
+
+      bft.sink.closeSync();
+
+      f1.deleteSync();
+      f2.deleteSync();
     });
   });
 }
