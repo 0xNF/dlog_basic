@@ -1,7 +1,6 @@
 import 'package:dart_ilogger/src/event_bus/events.dart';
 import 'package:dart_ilogger/src/event_bus/event_bus.dart';
 import 'package:dart_ilogger/src/log_level.dart';
-import 'package:dart_ilogger/src/targets/basic_console_target.dart';
 import 'package:dart_ilogger/src/targets/i_target.dart';
 
 abstract class ILoggerBase {

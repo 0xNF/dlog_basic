@@ -31,7 +31,7 @@ class BasicFileSink extends ISink {
   int get writtenBytes => _writtenBytes;
   int _writtenBytes = 0;
 
-  IOSink? _handle;
+  RandomAccessFile? _handle;
 
   BasicFileSink({required String pathToFile, this.encoding = utf8}) : _pathToFile = pathToFile;
 
@@ -54,7 +54,7 @@ class BasicFileSink extends ISink {
     final partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
     final fpath = partition.makeFullPath();
     final f = File(fpath);
-    _handle = f.openWrite(mode: FileMode.writeOnlyAppend, encoding: encoding);
+    _handle = f.openSync(mode: FileMode.writeOnlyAppend);
     _writtenBytes = f.lengthSync();
   }
 
@@ -82,9 +82,8 @@ class BasicFileSink extends ISink {
     }
     final bytes = (encoding.encoder).convert(formattedMessage);
     _writtenBytes += bytes.length;
-    _handle!.add(bytes);
-    _handle!.writeln(formattedMessage);
-    _handle!.flush();
+    _handle?.writeFromSync(bytes);
+    // _handle!.add(bytes);
   }
 
   @override
@@ -94,11 +93,11 @@ class BasicFileSink extends ISink {
 
   @override
   void flushSync() {
-    _handle?.flush();
+    _handle?.flushSync();
   }
 
   @override
   Future<void> flushAsync() async {
-    flushSync();
+    await _handle?.flush();
   }
 }

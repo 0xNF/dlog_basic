@@ -44,7 +44,7 @@ class BasicLogger extends ILogger {
       );
 
       for (final target in super.targets) {
-        target.writeAsync(logEvent);
+        target.writeSync(logEvent);
       }
     }
   }

@@ -67,7 +67,7 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
   }
 
   @override
-  void writeSync(LogEvent logEvent) async {
+  void writeSync(LogEvent logEvent) {
     var partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
     final rotator = _shouldRotate(rotationSettings, partition, sink);
     if (rotator != null) {
@@ -78,18 +78,24 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
       sink.openSync();
       isInitd = true;
     }
-    final str = formatter.format(logEvent);
+    final str = "${formatter.format(logEvent)}\n";
     sink.writeSync(str);
     sink.flushSync();
   }
 
   @override
   Future<void> writeAsync(LogEvent logEvent) async {
+    var partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
+    final rotator = _shouldRotate(rotationSettings, partition, sink);
+    if (rotator != null) {
+      sink.changePathMutSync(rotator.makeFullPath());
+      isInitd = false; /* reset the init so we open the new file */
+    }
     if (!isInitd) {
       await sink.openAsync();
       isInitd = true;
     }
-    final str = formatter.format(logEvent);
+    final str = "${formatter.format(logEvent)}\n";
     await sink.writeAsync(str);
     await sink.flushAsync();
   }

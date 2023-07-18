@@ -108,7 +108,6 @@ final class FileNamePartition {
     }
 
     if (extension != null && extension!.isNotEmpty) {
-      sb.write(_extensionDelimeter);
       sb.write(extension!);
     }
 
@@ -146,6 +145,11 @@ final class FileNamePartition {
       }
     }
     return cloneWith(incrementPortion: incr);
+  }
+
+  /// Used for deleting similar files
+  bool hasSameBasename(FileNamePartition other) {
+    return other.trueBasename == trueBasename;
   }
 
   FileNamePartition cloneWith({
