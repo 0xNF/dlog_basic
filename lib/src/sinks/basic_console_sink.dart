@@ -20,9 +20,11 @@ class BasicConsoleSink extends ISink {
 }
 
 class BasicFileSink extends ISink {
+  /// Current file being written to
   String get pathToFile => _pathToFile;
   String _pathToFile;
 
+  /// Encoding of the bytes to write
   final Encoding encoding;
 
   /// Total size of the file, used to determine if rollover-on-size is required
@@ -40,15 +42,19 @@ class BasicFileSink extends ISink {
     _pathToFile = newPath;
   }
 
+  /// Changes the path, for e.g., a file rollover
+  /// Closes the existing file if open
+  Future<void> changePathAsync(String newPath) async {
+    await closeAsync();
+    _pathToFile = newPath;
+  }
+
   @override
   void openSync() {
     final partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
     final fpath = partition.makeFullPath();
     final f = File(fpath);
-    if (!f.existsSync()) {
-      f.createSync(recursive: true);
-    }
-    _handle = f.openWrite(mode: FileMode.append, encoding: encoding);
+    _handle = f.openWrite(mode: FileMode.writeOnlyAppend, encoding: encoding);
     _writtenBytes = f.lengthSync();
   }
 
@@ -74,8 +80,11 @@ class BasicFileSink extends ISink {
     if (_handle == null) {
       throw Exception('File Handle not initialized');
     }
-    _writtenBytes += (const Utf8Encoder()).convert(formattedMessage).lengthInBytes;
+    final bytes = (encoding.encoder).convert(formattedMessage);
+    _writtenBytes += bytes.length;
+    _handle!.add(bytes);
     _handle!.writeln(formattedMessage);
+    _handle!.flush();
   }
 
   @override
