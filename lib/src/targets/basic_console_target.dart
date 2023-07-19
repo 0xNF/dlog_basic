@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dart_ilogger/dart_ilogger.dart';
 import 'package:dart_ilogger/src/log_event.dart';
 import 'package:dart_ilogger/src/sinks/file_name_partition.dart';
+import 'package:path/path.dart' as path;
 
 /// This basic target sends output to StdOut formatted with pipes
 final class BasicConsoleTarget extends ITarget {
@@ -66,14 +69,58 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
     return null;
   }
 
-  @override
-  void writeSync(LogEvent logEvent) {
+  /// Checks whether to rotate a log to a new one
+  /// Mutates the isInitd state and sets the new file if so
+  /// Runs the delete proceedure if keepHowMany is defined
+  void _checkRotateMut() {
     var partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
     final rotator = _shouldRotate(rotationSettings, partition, sink);
     if (rotator != null) {
       sink.changePathMutSync(rotator.makeFullPath());
       isInitd = false; /* reset the init so we open the new file */
+      if (rotationSettings.keepHowMany != null) {
+        _deleteOldMut(rotationSettings, rotator);
+      }
     }
+  }
+
+  /// Deletes old log files that share the same TrueBasename based on the KeepHowMany flag
+  Future<void> _deleteOldMut(FileRotationSettings rotationSettings, FileNamePartition currentFilePartition) async {
+    final keepHowMany = rotationSettings.keepHowMany;
+    if (keepHowMany == null || keepHowMany.isNaN || keepHowMany.isNegative) {
+      return;
+    }
+    Directory d = Directory(path.dirname(currentFilePartition.makeFullPath()));
+    try {
+      final lst = <FileNamePartition>[];
+      await for (final fse in d.list()) {
+        if (fse is File) {
+          final fsePartition = FileNamePartition.fromFuzzyFilePath(fse.path);
+          if (fsePartition.representSameBaseFile(currentFilePartition)) {
+            lst.add(fsePartition);
+          }
+        }
+      }
+
+      lst.sort((x, y) => x.compareTo(y));
+
+      /* Keep Top-n, delete rest */
+    } catch (e) {
+      stderr.writeln("[Dart_Ilogger] [error] Failed to delete file on rollover: $e");
+    }
+    if (keepHowMany == 0) {
+      try {
+        await sink.closeAsync();
+        await currentFilePartition.getIOFile().delete();
+      } catch (e) {
+        return;
+      }
+    }
+  }
+
+  @override
+  void writeSync(LogEvent logEvent) {
+    _checkRotateMut();
     if (!isInitd) {
       sink.openSync();
       isInitd = true;
@@ -85,12 +132,7 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
 
   @override
   Future<void> writeAsync(LogEvent logEvent) async {
-    var partition = FileNamePartition.fromFuzzyFilePath(pathToFile);
-    final rotator = _shouldRotate(rotationSettings, partition, sink);
-    if (rotator != null) {
-      sink.changePathMutSync(rotator.makeFullPath());
-      isInitd = false; /* reset the init so we open the new file */
-    }
+    _checkRotateMut();
     if (!isInitd) {
       await sink.openAsync();
       isInitd = true;

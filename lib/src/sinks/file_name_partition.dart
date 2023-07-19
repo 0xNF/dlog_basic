@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:dart_ilogger/dart_ilogger.dart';
 import 'package:path/path.dart' as path;
 
-final class FileNamePartition {
+final _dateOldest = DateTime(1970);
+
+final class FileNamePartition implements Comparable {
   static const String _dateDelimeter = '_';
   static const String _incrementerDelimeter = '-';
   static const String _extensionDelimeter = '.';
@@ -77,6 +78,9 @@ final class FileNamePartition {
         final lastSplits = splits.last.split(_incrementerDelimeter);
         lastIncrement = int.tryParse(lastSplits.last);
       }
+    } else {
+      final lastSplits = splits.last.split(_incrementerDelimeter);
+      lastIncrement = int.tryParse(lastSplits.last);
     }
 
     String trueBaseName = basename;
@@ -156,8 +160,8 @@ final class FileNamePartition {
   }
 
   /// Used for deleting similar files
-  bool hasSameBasename(FileNamePartition other) {
-    return other.trueBasename == trueBasename;
+  bool representSameBaseFile(FileNamePartition other) {
+    return other.trueBasename == trueBasename && other.extension == extension;
   }
 
   FileNamePartition cloneWith({
@@ -178,5 +182,21 @@ final class FileNamePartition {
       datePortion: datePortion ?? this.datePortion,
       incrementPortion: incrementPortion ?? this.incrementPortion,
     );
+  }
+
+  @override
+  String toString() {
+    return "$trueBasename [DatePortion=$datePortion; IncrementPortion=$incrementPortion; Extension=$extension]";
+  }
+
+  @override
+  int compareTo(other) {
+    int i = (datePortion ?? _dateOldest).compareTo((other.datePortion ?? _dateOldest));
+    if (i != 0) {
+      return i;
+    }
+    i = (incrementPortion ?? 0).compareTo((other.incrementPortion ?? 0));
+
+    return i;
   }
 }

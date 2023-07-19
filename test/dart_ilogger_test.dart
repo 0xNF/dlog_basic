@@ -6,6 +6,73 @@ import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 
 void main() {
+  group("Test sort order of old logs", () {
+    test("test sort: only increment", () {
+      final lst = <FileNamePartition>[
+        FileNamePartition.fromFuzzyFilePath("sample.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample-1.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample-4.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample-2.txt"),
+      ];
+
+      lst.sort((x, y) {
+        return x.compareTo(y);
+      });
+
+      expect(lst.first.filename, "sample");
+      expect(lst[1].filename, "sample-1");
+      expect(lst[2].filename, "sample-2");
+      expect(lst[3].filename, "sample-4");
+    });
+
+    test("test sort: only date", () {
+      final lst = <FileNamePartition>[
+        FileNamePartition.fromFuzzyFilePath("sample_2012-06-20.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2012-07-20.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2013-07-20.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2012-06-21.txt"),
+      ];
+
+      lst.sort((x, y) {
+        return x.compareTo(y);
+      });
+
+      expect(lst[0].datePortion, DateTime(2012, 06, 20));
+      expect(lst[1].datePortion, DateTime(2012, 06, 21));
+      expect(lst[2].datePortion, DateTime(2012, 07, 20));
+      expect(lst[3].datePortion, DateTime(2013, 07, 20));
+    });
+
+    test("test sort: date and increment", () {
+      final lst = <FileNamePartition>[
+        FileNamePartition.fromFuzzyFilePath("sample_2013-07-20-3.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2012-06-20-2.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2012-06-20-1.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2013-07-20-1.txt"),
+        FileNamePartition.fromFuzzyFilePath("sample_2010-07-21.txt"),
+      ];
+
+      lst.sort((x, y) {
+        return x.compareTo(y);
+      });
+
+      expect(lst[0].datePortion, DateTime(2010, 07, 21));
+      expect(lst[0].incrementPortion, null);
+
+      expect(lst[1].datePortion, DateTime(2012, 06, 20));
+      expect(lst[1].incrementPortion, 1);
+
+      expect(lst[2].datePortion, DateTime(2012, 06, 20));
+      expect(lst[2].incrementPortion, 2);
+
+      expect(lst[3].datePortion, DateTime(2013, 07, 20));
+      expect(lst[3].incrementPortion, 1);
+
+      expect(lst[4].datePortion, DateTime(2013, 07, 20));
+      expect(lst[4].incrementPortion, 3);
+    });
+  });
+
   group('Basic Console Tests', () {
     final _logger = BasicLogger(name: 'ConsoleTestLogger');
 
@@ -45,7 +112,7 @@ void main() {
         for (final fse in d.listSync()) {
           if (fse is File) {
             final p2 = FileNamePartition.fromFuzzyFilePath(fse.path);
-            if (p2.hasSameBasename(p1)) {
+            if (p2.representSameBaseFile(p1)) {
               fse.deleteSync();
             }
           }
