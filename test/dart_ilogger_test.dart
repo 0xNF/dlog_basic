@@ -205,5 +205,45 @@ void main() {
       f1.deleteSync();
       f2.deleteSync();
     });
+
+    test("Delete old log files", () async {
+      const int size = 1000;
+      bft = BasicFileTarget(pathToFile: logpath, rotationSettings: FileRotationSettings(rotateOnByteSize: (size - (size * .1)).toInt(), keepHowMany: 3));
+      logger = BasicLogger(name: 'FileTestLogger', targets: [
+        bft,
+      ]);
+
+      /* first three should produce `-0`, `-1`, and `-2- */
+      logger.info('1' * size);
+      logger.info('2' * size);
+      logger.info('3' * size);
+      /* second three should produce `-3`, `-4`, and `-5`, and also delete the previous 3 */
+      logger.info('4' * size);
+      logger.info('5' * size);
+      logger.info('6' * size);
+
+      /* There should now only be 3 files, numbered -3, -4 and -5 */
+      final dirname = path.dirname(bft.sink.filePartition.filePath);
+      final d = Directory(dirname);
+
+      final lst = <File>[];
+      for (final fse in d.listSync()) {
+        if (fse is File) {
+          final fsePartition = FileNamePartition.fromFuzzyFilePath(fse.path);
+          if (fsePartition.representSameBaseFile(bft.sink.filePartition)) {
+            lst.add(fse);
+          }
+        }
+      }
+
+      expect(lst.length, 3);
+
+      /* cleanup */
+      for (final file in lst) {
+        try {
+          file.deleteSync();
+        } catch (_) {}
+      }
+    });
   });
 }
