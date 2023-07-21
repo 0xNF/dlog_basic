@@ -15,4 +15,9 @@ final class BasicConsoleTarget extends ITarget {
   Future<void> writeAsync(LogEvent logEvent) async {
     writeSync(logEvent);
   }
+
+  @override
+  bool shouldWrite(LogEvent logEvent) {
+    return true;
+  }
 }

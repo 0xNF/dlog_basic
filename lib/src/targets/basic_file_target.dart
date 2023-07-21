@@ -37,16 +37,16 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
     if (rotationSettings.rotateOnByteSize != null && sink.writtenBytes >= rotationSettings.rotateOnByteSize!) {
       return partition.rolloverIncrement();
     }
-    final every = rotationSettings.rotateOnEvery;
+    final rotateOnDate = rotationSettings.rotateOnEvery;
     final partitionDate = partition.datePortion;
-    if (every != null) {
+    if (rotateOnDate != null) {
       if (partitionDate == null) {
         /* The system glitched and we didn't record a Date on the log file. Rotate it */
         return partition.rolloverDate();
       } else {
-        final dateRotatorCheck = partitionDate.add(every);
+        final dateRotatorCheck = partitionDate.add(rotateOnDate);
 
-        if (every.inDays < 1) {
+        if (rotateOnDate.inDays < 1) {
           /* This basic logger doesn't handle granularity underneath a day. Don't rotate just to be safe */
           return null;
         } else if (now.isAfter(dateRotatorCheck)) {
@@ -128,6 +128,11 @@ final class BasicFileTarget extends ITarget<BasicFileSink, IFormatter> {
     if (didRotate) {
       _deleteOldMut(rotationSettings, _pathToFile);
     }
+  }
+
+  @override
+  bool shouldWrite(LogEvent logEvent) {
+    return true;
   }
 }
 

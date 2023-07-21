@@ -44,7 +44,9 @@ class BasicLogger extends ILogger {
       );
 
       for (final target in super.targets) {
-        target.writeSync(logEvent);
+        if (target.shouldWrite(logEvent)) {
+          target.writeSync(logEvent);
+        }
       }
     }
   }

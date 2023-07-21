@@ -24,4 +24,7 @@ abstract class ITarget<S extends ISink, F extends IFormatter> {
   ///
   /// For sync, see [writeSync]
   Future<void> writeAsync(LogEvent logEvent);
+
+  /// Whether this log event should be written to this logger
+  bool shouldWrite(LogEvent logEvent);
 }
