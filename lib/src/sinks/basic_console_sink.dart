@@ -49,11 +49,13 @@ class BasicFileSink extends ISink implements IOpenable, IAsyncOpenable, IClosabl
     _filePartition = FileNamePartition.fromFuzzyFilePath(newPath);
   }
 
-
   @override
   void openSync() {
     final fpath = filePartition.makeFullPath();
     final f = File(fpath);
+    if (!f.existsSync()) {
+      f.createSync(recursive: true, exclusive: false);
+    }
     _handle = f.openSync(mode: FileMode.writeOnlyAppend);
     _writtenBytes = f.lengthSync();
   }
