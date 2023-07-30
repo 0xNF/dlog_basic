@@ -3,30 +3,6 @@
 abstract class ISink {
   const ISink();
 
-  /// Opens this writer. Not all writers require this.
-  /// For async open, see [openAsync]
-  void openSync() {
-    throw UnimplementedError("This ISink does not implement `openSync`");
-  }
-
-  /// Opens this writer asychronously Not all writers require this.
-  /// For sync open, see [openSync]
-  Future<void> openAsync() async {
-    throw UnimplementedError("This ISink does not implement `openAsync`");
-  }
-
-  /// Closes this writer. Not all writers require this.
-  /// For async close, see [closeAsync]
-  void closeSync() {
-    throw UnimplementedError("This ISink does not implement `closeSync`");
-  }
-
-  /// Closes this writer. Not all writers requrie this.
-  /// For sync close, see [closeSync]
-  Future<void> closeAsync() async {
-    throw UnimplementedError("This ISink does not implement `closeAsync`");
-  }
-
   /// Writes the final message to the sink. Not all writers require this.
   /// For async write, see [writeAsync]
   void writeSync(String formattedMessage) {
@@ -50,4 +26,28 @@ abstract class ISink {
   Future<void> flushAsync() {
     throw UnimplementedError("This ISink does not implement `flushAsync`");
   }
+}
+
+abstract class IOpenable {
+  /// Opens this writer. Not all writers require this.
+  /// For async open, see [openAsync]
+  void openSync();
+}
+
+abstract class IAsyncOpenable {
+  /// Opens this writer asychronously Not all writers require this.
+  /// For sync open, see [openSync]
+  Future<void> openAsync();
+}
+
+abstract class IClosable {
+  /// Closes this writer. Not all writers require this.
+  /// For async close, see [closeAsync]
+  void closeSync();
+}
+
+abstract class IAsyncClosable {
+  /// Closes this writer. Not all writers requrie this.
+  /// For sync close, see [closeSync]
+  Future<void> closeAsync();
 }

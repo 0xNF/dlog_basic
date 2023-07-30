@@ -19,7 +19,7 @@ class BasicConsoleSink extends ISink {
   }
 }
 
-class BasicFileSink extends ISink {
+class BasicFileSink extends ISink implements IOpenable, IAsyncOpenable, IClosable, IAsyncClosable {
   /// Current file being written to
   FileNamePartition get filePartition => _filePartition;
   FileNamePartition _filePartition;
@@ -48,6 +48,7 @@ class BasicFileSink extends ISink {
     await closeAsync();
     _filePartition = FileNamePartition.fromFuzzyFilePath(newPath);
   }
+
 
   @override
   void openSync() {
