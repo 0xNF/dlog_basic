@@ -26,7 +26,6 @@ class JsonFormatter implements IFormatter {
       'Timestamp': logEvent.datetime.millisecondsSinceEpoch,
       'Level': logEvent.level.name,
       'Name': logEvent.loggerName,
-      'Message': logEvent.message,
     };
     if (logEvent.exception != null) {
       data['Exception'] = logEvent.exception;
@@ -34,6 +33,25 @@ class JsonFormatter implements IFormatter {
     if (logEvent.eventProperties.isNotEmpty) {
       data['EventProperties'] = logEvent.eventProperties;
     }
+
+    String m = logEvent.message.toString();
+    if (logEvent.eventProperties.isNotEmpty) {
+      for (final kvp in logEvent.eventProperties.entries) {
+        String vl;
+        if (kvp.value is String) {
+          vl = kvp.value as String;
+        } else {
+          try {
+            vl = const JsonEncoder().convert(kvp.value);
+          } catch (e) {
+            vl = kvp.value.toString();
+          }
+        }
+        m = m.replaceAll('{${kvp.key}}', vl);
+      }
+    }
+
+    data['Message'] = m;
 
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     return encoder.convert(data);
@@ -56,7 +74,6 @@ class JsonLinesFormatter implements IFormatter {
       'Timestamp': logEvent.datetime.millisecondsSinceEpoch,
       'Level': logEvent.level.name,
       'Name': logEvent.loggerName,
-      'Message': logEvent.message,
     };
     if (logEvent.exception != null) {
       data['Exception'] = logEvent.exception;
@@ -64,6 +81,25 @@ class JsonLinesFormatter implements IFormatter {
     if (logEvent.eventProperties.isNotEmpty) {
       data['EventProperties'] = logEvent.eventProperties;
     }
+
+    String m = logEvent.message.toString();
+    if (logEvent.eventProperties.isNotEmpty) {
+      for (final kvp in logEvent.eventProperties.entries) {
+        String vl;
+        if (kvp.value is String) {
+          vl = kvp.value as String;
+        } else {
+          try {
+            vl = const JsonEncoder().convert(kvp.value);
+          } catch (e) {
+            vl = kvp.value.toString();
+          }
+        }
+        m = m.replaceAll('{${kvp.key}}', vl);
+      }
+    }
+
+    data['Message'] = m;
 
     return jsonConvert(data);
   }
