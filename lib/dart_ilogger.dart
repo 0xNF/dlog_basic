@@ -14,3 +14,4 @@ export 'package:dart_ilogger/src/sinks/basic_console_sink.dart';
 
 export 'package:dart_ilogger/src/formatters/i_formatter.dart';
 export 'package:dart_ilogger/src/formatters/basic_formatter.dart';
+export 'package:dart_ilogger/src/formatters/json_formatter.dart';

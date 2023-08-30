@@ -37,37 +37,3 @@ class BasicFormatter implements IFormatter {
     return msg;
   }
 }
-
-/// The JsonFormatter is suitable for Structured Logging
-///
-/// it returns a log object of the following specification:
-///
-/// {
-///   'Timestamp': MS-Since-Epoch Unix time,
-///   'Level': String,
-///   'Name': String
-///   'Message: String,
-///   'Exception': String?,
-///   'EventProperties': JsonObject?
-/// }
-class JsonFormatter implements IFormatter {
-  const JsonFormatter();
-
-  @override
-  String format(LogEvent logEvent) {
-    Map<String, dynamic> jsonMap = {
-      'Timestamp': logEvent.datetime.millisecondsSinceEpoch,
-      'Level': logEvent.level.name,
-      'Name': logEvent.loggerName,
-      'Message': logEvent.message,
-    };
-    if (logEvent.exception != null) {
-      jsonMap['Exception'] = logEvent.exception;
-    }
-    if (logEvent.eventProperties.isNotEmpty) {
-      jsonMap['EventProperties'] = logEvent.eventProperties;
-    }
-
-    return jsonConvert(jsonMap);
-  }
-}
