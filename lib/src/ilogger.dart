@@ -1,40 +1,61 @@
-import 'package:dart_ilogger/src/ilogger_base.dart';
-import 'package:dart_ilogger/src/isuppress.dart';
-import 'package:dart_ilogger/src/log_level.dart';
-import 'package:dart_ilogger/src/targets/basic_console_target.dart';
-import 'package:dart_ilogger/src/targets/i_target.dart';
+import 'package:dlogbasic/src/ilogger_base.dart';
+import 'package:dlogbasic/src/isuppress.dart';
+import 'package:dlogbasic/src/targets/basic_console_target.dart';
+import 'package:dlogbasic/src/targets/i_target.dart';
 
-abstract class ILogger extends ILoggerBase implements ISuppress {
+import 'package:ilogger/ilogger.dart';
+
+abstract class DLogger extends ILoggerBase implements ILogger, ISuppress {
+  @override
   bool get isTraceEnabled => isEnabled(LogLevel.trace);
+  @override
   bool get isDebugEnabled => isEnabled(LogLevel.debug);
+  @override
   bool get isInfoEnabled => isEnabled(LogLevel.info);
+  @override
   bool get isWarnEnabled => isEnabled(LogLevel.warn);
+  @override
   bool get isErrorEnabled => isEnabled(LogLevel.error);
+  @override
   bool get isFatalEnabled => isEnabled(LogLevel.fatal);
 
   /// Writes a diagnostic message at the [LogLevel.trace] levels
+  @override
   void trace(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
 
   /// Writes a diagnostic message at the [LogLevel.debug] level
+  @override
   void debug(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
 
   /// Writes a diagnostic message at the [LogLevel.info] level
+  @override
   void info(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
 
   /// Writes a diagnostic message at the [LogLevel.warn] level
+  @override
   void warn(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
 
   /// Writes a diagnostic message at the [LogLevel.error] level
+  @override
   void error(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
 
   /// Writes a diagnostic message at the [LogLevel.fatal] level
+  @override
   void fatal(dynamic message, {Exception? exception, Map<String, dynamic>? eventProperties});
+
+  // @override
+  // void log(
+  //   LogLevel level,
+  //   dynamic message, {
+  //   Map<String, dynamic>? eventProperties,
+  //   Exception? exception,
+  // }) {}
 
   /// Runs action.
   ///
   ///  If the action throws, the exception is logged at Error level. Exception is not propagated outside of this method.
   @override
-  void swallow(Function() action) {
+  void swallow(Function action) {
     try {
       action();
     } on Exception catch (e) {
@@ -61,7 +82,7 @@ abstract class ILogger extends ILoggerBase implements ISuppress {
   ///
   /// If the action throws, the exception is logged at Error level. Exception is not propagated outside of this method.
   @override
-  Future<void> swallowAsync(Function() action) async {
+  Future<void> swallowAsync(Function action) async {
     try {
       await action();
     } on Exception catch (e) {
@@ -85,7 +106,7 @@ abstract class ILogger extends ILoggerBase implements ISuppress {
     }
   }
 
-  const ILogger({
+  const DLogger({
     required super.name,
     super.targets = const <ITarget>[
       BasicConsoleTarget(),

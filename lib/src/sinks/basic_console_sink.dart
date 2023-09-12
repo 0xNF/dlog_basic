@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_ilogger/dart_ilogger.dart';
-import 'package:dart_ilogger/src/sinks/file_name_partition.dart';
-import 'package:dart_ilogger/src/sinks/i_sink.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:dlogbasic/src/sinks/file_name_partition.dart';
+import 'package:dlogbasic/src/sinks/i_sink.dart';
 
 class BasicConsoleSink extends ISink {
   const BasicConsoleSink();

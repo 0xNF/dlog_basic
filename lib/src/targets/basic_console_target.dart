@@ -1,5 +1,5 @@
-import 'package:dart_ilogger/dart_ilogger.dart';
-import 'package:dart_ilogger/src/log_event.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:dlogbasic/src/log_event.dart';
 
 /// This basic target sends output to StdOut formatted with pipes
 final class BasicConsoleTarget extends ITarget {

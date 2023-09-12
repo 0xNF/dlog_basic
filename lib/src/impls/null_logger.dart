@@ -1,7 +1,8 @@
-import 'package:dart_ilogger/dart_ilogger.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:ilogger/ilogger.dart';
 
 /// A logger that discards all messages
-class NullLogger extends ILogger {
+class NullLogger extends DLogger {
   const NullLogger({required super.name});
 
   @override
@@ -26,9 +27,7 @@ class NullLogger extends ILogger {
   bool get isWarnEnabled => true;
 
   @override
-  void log(LogLevel level, message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    /* do nothing */
-  }
+  void log(dynamic message, {required LogLevel level, Exception? exception, Map<String, dynamic>? eventProperties}) {}
 
   @override
   void trace(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {}
@@ -49,14 +48,14 @@ class NullLogger extends ILogger {
   void fatal(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {}
 
   @override
-  void swallow(Function() action) {
+  void swallow(Function action) {
     try {
       action();
     } finally {}
   }
 
   @override
-  Future<void> swallowAsync(Function() action) async {
+  Future<void> swallowAsync(Function action) async {
     try {
       await action();
     } finally {}

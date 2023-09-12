@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:dart_ilogger/dart_ilogger.dart';
-import 'package:dart_ilogger/src/sinks/file_name_partition.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:dlogbasic/src/sinks/file_name_partition.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
 

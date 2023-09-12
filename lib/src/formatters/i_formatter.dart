@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dart_ilogger/src/log_event.dart';
+import 'package:dlogbasic/src/log_event.dart';
 
 /// this class is
 abstract class IFormatter {

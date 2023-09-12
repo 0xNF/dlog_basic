@@ -1,7 +1,8 @@
-import 'package:dart_ilogger/dart_ilogger.dart';
-import 'package:dart_ilogger/src/log_event.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:dlogbasic/src/log_event.dart';
+import 'package:ilogger/ilogger.dart';
 
-class BasicLogger extends ILogger {
+class BasicLogger extends DLogger {
   const BasicLogger({
     required super.name,
     super.targets = const [
@@ -31,7 +32,7 @@ class BasicLogger extends ILogger {
   bool get isWarnEnabled => true;
 
   @override
-  void log(LogLevel level, message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
+  void log(dynamic message, {required LogLevel level, Exception? exception, Map<String, dynamic>? eventProperties}) {
     if (isEnabled(level)) {
       final LogEvent logEvent = LogEvent(
         loggerName: super.name,
@@ -52,31 +53,31 @@ class BasicLogger extends ILogger {
 
   @override
   void trace(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.trace, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.trace, exception: exception, eventProperties: eventProperties);
   }
 
   @override
   void debug(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.debug, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.debug, exception: exception, eventProperties: eventProperties);
   }
 
   @override
   void info(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.info, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.info, exception: exception, eventProperties: eventProperties);
   }
 
   @override
   void warn(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.warn, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.warn, exception: exception, eventProperties: eventProperties);
   }
 
   @override
   void error(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.error, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.error, exception: exception, eventProperties: eventProperties);
   }
 
   @override
   void fatal(message, {Exception? exception, Map<String, dynamic>? eventProperties}) {
-    log(LogLevel.fatal, message, exception: exception, eventProperties: eventProperties);
+    log(message, level: LogLevel.fatal, exception: exception, eventProperties: eventProperties);
   }
 }

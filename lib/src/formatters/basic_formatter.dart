@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:dart_ilogger/src/formatters/i_formatter.dart';
-import 'package:dart_ilogger/src/log_event.dart';
+import 'package:dlogbasic/src/formatters/i_formatter.dart';
+import 'package:dlogbasic/src/log_event.dart';
 
 /// The BasicFormatter formats messages like so:
 ///

@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:dart_ilogger/dart_ilogger.dart';
-import 'package:dart_ilogger/src/log_event.dart';
-import 'package:dart_ilogger/src/sinks/file_name_partition.dart';
+import 'package:dlogbasic/dlogbasic.dart';
+import 'package:dlogbasic/src/log_event.dart';
+import 'package:dlogbasic/src/sinks/file_name_partition.dart';
 import 'package:path/path.dart' as path;
+import 'package:ilogger/ilogger.dart';
 
 void innerLog(LogLevel level, String msg) {
-  stderr.writeln('[${DateTime.now()}] [Dart_ILogger] [$level] $msg');
+  stderr.writeln('[${DateTime.now()}] [dlogbasic] [$level] $msg');
 }
 
 /// This basic target sends output to the file at the path specified, appending to it, formatted with pipes

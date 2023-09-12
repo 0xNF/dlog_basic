@@ -1,9 +1,9 @@
-name: dart_ilogger
-description: A plug-in based logging interface. This package is not intended to be used for conrete logging purposes, it is primarily for the interfaces. It provides only an extremely basic implementation of a real logger.
+name: dlogbasic
+description: A plug-in based logging interface. This package provides only a basic implementation of the interfaces supplied by Dart ilogger, and is intended for simple use cases only.
 version: 0.1.0
 publish_to: none #todo(nf): remove eventually
-homepage: https://github.com/0xnf/dart_ilogger
-repository: https://github.com/0xnf/dart_ilogger
+homepage: https://github.com/0xnf/dlogbasic
+repository: https://github.com/0xnf/dlogbasic
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -13,9 +13,10 @@ dev_dependencies:
   test: ^1.16.0
 
 dependencies:
-  {
-    build_runner: ^2.2.0,
-    collection: ^1.18.0,
-    json_serializable: ^6.3.1,
-    path: ^1.8.3,
-  }
+  ilogger:
+    git:
+      url: https://github.com/0xnf/dart_ilogger
+  build_runner: ^2.2.0
+  collection: ^1.18.0
+  json_serializable: ^6.3.1
+  path: ^1.8.3

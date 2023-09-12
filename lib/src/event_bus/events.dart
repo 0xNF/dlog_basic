@@ -1,4 +1,4 @@
-import 'package:dart_ilogger/src/ilogger_base.dart';
+import 'package:dlogbasic/src/ilogger_base.dart';
 
 /// Represents information about the logger that was reconfigured
 ///

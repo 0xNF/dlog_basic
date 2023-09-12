@@ -1,6 +1,6 @@
-import 'package:dart_ilogger/src/log_event.dart';
-import 'package:dart_ilogger/src/sinks/i_sink.dart';
-import 'package:dart_ilogger/src/formatters/i_formatter.dart';
+import 'package:dlogbasic/src/log_event.dart';
+import 'package:dlogbasic/src/sinks/i_sink.dart';
+import 'package:dlogbasic/src/formatters/i_formatter.dart';
 
 /// A target is a combination of WHERE to write (sink)
 /// and WHAT to write (writer)

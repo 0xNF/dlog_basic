@@ -1,4 +1,4 @@
-import 'package:dart_ilogger/src/log_level.dart';
+import 'package:ilogger/ilogger.dart';
 
 final class LogEvent {
   final String loggerName;
