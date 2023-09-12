@@ -7,7 +7,6 @@ final _dateOldest = DateTime(1970);
 final class FileNamePartition implements Comparable {
   static const String _dateDelimeter = '_';
   static const String _incrementerDelimeter = '-';
-  static const String _extensionDelimeter = '.';
   static const String _datePadder = '0';
 
   /// Absolute or relative path to the file, without filenames

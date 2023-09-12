@@ -74,25 +74,25 @@ void main() {
   });
 
   group('Basic Console Tests', () {
-    final _logger = BasicLogger(name: 'ConsoleTestLogger');
+    final logger = BasicLogger(name: 'ConsoleTestLogger');
 
     setUp(() {});
 
     test('Test console', () {
-      _logger.info("Test console");
+      logger.info("Test console");
     });
 
     test("Test console with eprops", () {
-      _logger.info("Test console eprops", eventProperties: {'keya': 'valuea'});
+      logger.info("Test console eprops", eventProperties: {'keya': 'valuea'});
     });
 
     test("Test console with eprops substitute", () {
-      _logger.info('Test console eprops substitute: val: {keya}', eventProperties: {'keya': 'valuea'});
+      logger.info('Test console eprops substitute: val: {keya}', eventProperties: {'keya': 'valuea'});
     });
 
     test("Test console with exception", () {
       var e = FormatException('some fmterr');
-      _logger.error('Test console with exception', exception: e);
+      logger.error('Test console with exception', exception: e);
     });
   });
 

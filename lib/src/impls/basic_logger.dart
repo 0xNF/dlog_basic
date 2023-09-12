@@ -1,6 +1,5 @@
 import 'package:dart_ilogger/dart_ilogger.dart';
 import 'package:dart_ilogger/src/log_event.dart';
-  import 'package:dart_ilogger/src/targets/basic_console_target.dart';
 
 class BasicLogger extends ILogger {
   const BasicLogger({
