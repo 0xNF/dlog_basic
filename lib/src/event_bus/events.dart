@@ -1,10 +1,10 @@
-import 'package:dlogbasic/src/ilogger_base.dart';
+import 'package:dlogbasic/src/dlogger_base.dart';
 
 /// Represents information about the logger that was reconfigured
 ///
 ///  Occurs when logger configuration changes.
 class LoggerReconfigured {
-  final ILoggerBase loggerBase;
+  final DLoggerBase loggerBase;
 
   const LoggerReconfigured({required this.loggerBase});
 }

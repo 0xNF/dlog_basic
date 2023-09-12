@@ -1,4 +1,4 @@
-export 'package:dlogbasic/src/ilogger.dart';
+export 'package:dlogbasic/src/dlogger.dart';
 export 'package:dlogbasic/src/event_bus/events.dart';
 export 'package:ilogger/ilogger.dart';
 
