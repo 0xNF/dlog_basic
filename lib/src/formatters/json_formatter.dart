@@ -34,22 +34,7 @@ class JsonFormatter implements IFormatter {
       data['EventProperties'] = logEvent.eventProperties;
     }
 
-    String m = logEvent.message.toString();
-    if (logEvent.eventProperties.isNotEmpty) {
-      for (final kvp in logEvent.eventProperties.entries) {
-        String vl;
-        if (kvp.value is String) {
-          vl = kvp.value as String;
-        } else {
-          try {
-            vl = const JsonEncoder().convert(kvp.value);
-          } catch (e) {
-            vl = kvp.value.toString();
-          }
-        }
-        m = m.replaceAll('{${kvp.key}}', vl);
-      }
-    }
+    final m = keyReplacer(logEvent, const JsonEncoder().convert);
 
     data['Message'] = m;
 
@@ -82,22 +67,7 @@ class JsonLinesFormatter implements IFormatter {
       data['EventProperties'] = logEvent.eventProperties;
     }
 
-    String m = logEvent.message.toString();
-    if (logEvent.eventProperties.isNotEmpty) {
-      for (final kvp in logEvent.eventProperties.entries) {
-        String vl;
-        if (kvp.value is String) {
-          vl = kvp.value as String;
-        } else {
-          try {
-            vl = const JsonEncoder().convert(kvp.value);
-          } catch (e) {
-            vl = kvp.value.toString();
-          }
-        }
-        m = m.replaceAll('{${kvp.key}}', vl);
-      }
-    }
+    final m = keyReplacer(logEvent, const JsonEncoder().convert);
 
     data['Message'] = m;
 

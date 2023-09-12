@@ -1,7 +1,6 @@
 name: dlogbasic
 description: A plug-in based logging interface. This package provides only a basic implementation of the interfaces supplied by Dart ilogger, and is intended for simple use cases only.
 version: 0.1.0
-publish_to: none #todo(nf): remove eventually
 homepage: https://github.com/0xnf/dlogbasic
 repository: https://github.com/0xnf/dlogbasic
 

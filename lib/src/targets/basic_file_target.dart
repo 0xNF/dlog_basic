@@ -4,7 +4,6 @@ import 'package:dlogbasic/dlogbasic.dart';
 import 'package:dlogbasic/src/log_event.dart';
 import 'package:dlogbasic/src/sinks/file_name_partition.dart';
 import 'package:path/path.dart' as path;
-import 'package:ilogger/ilogger.dart';
 
 void innerLog(LogLevel level, String msg) {
   stderr.writeln('[${DateTime.now()}] [dlogbasic] [$level] $msg');

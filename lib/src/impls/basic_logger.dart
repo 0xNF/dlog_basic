@@ -1,6 +1,5 @@
 import 'package:dlogbasic/dlogbasic.dart';
 import 'package:dlogbasic/src/log_event.dart';
-import 'package:ilogger/ilogger.dart';
 
 class BasicLogger extends DLogger {
   const BasicLogger({

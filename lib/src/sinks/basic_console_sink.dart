@@ -10,7 +10,7 @@ class BasicConsoleSink extends ISink {
 
   @override
   void writeSync(String formattedMessage) {
-    print(formattedMessage);
+    stdout.writeln(formattedMessage);
   }
 
   @override

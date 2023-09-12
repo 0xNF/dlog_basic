@@ -1,5 +1,4 @@
 import 'package:dlogbasic/dlogbasic.dart';
-import 'package:ilogger/ilogger.dart';
 
 /// A logger that discards all messages
 class NullLogger extends DLogger {
