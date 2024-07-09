@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:dlogbasic/dlogbasic.dart';
 import 'package:dlogbasic/src/sinks/file_name_partition.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart' as path;
+import 'package:universal_io/io.dart';
 
 void main() {
   group("Test sort order of old logs", () {

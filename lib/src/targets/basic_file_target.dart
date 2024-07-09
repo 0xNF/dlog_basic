@@ -1,9 +1,9 @@
-import 'dart:io';
-
 import 'package:dlogbasic/dlogbasic.dart';
 import 'package:dlogbasic/src/log_event.dart';
+import 'package:dlogbasic/src/sinks/basic_file_sink.dart';
 import 'package:dlogbasic/src/sinks/file_name_partition.dart';
 import 'package:path/path.dart' as path;
+import 'package:universal_io/io.dart';
 
 void innerLog(LogLevel level, String msg) {
   stderr.writeln('[${DateTime.now()}] [dlogbasic] [$level] $msg');
